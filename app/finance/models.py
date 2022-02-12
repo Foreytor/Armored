@@ -12,14 +12,14 @@ class Accounts(models.Model):
         auto_now_add=True, verbose_name='Дата создания счета')
     dateUpdate = models.DateTimeField(
         auto_now=True, verbose_name='Дата последнего изменения счета')
-    
+
     def __str__(self):
         return str(self.account)
-    
 
 
 class Operations(models.Model):
-    operation = models.CharField(max_length=36, verbose_name='Номер операции', unique=True)
+    operation = models.CharField(
+        max_length=36, verbose_name='Номер операции', unique=True)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='Пользователь отправитель')
     userRecipient = models.ForeignKey(
@@ -35,7 +35,8 @@ class Operations(models.Model):
 
 
 class Translations(models.Model):
-    operation = models.ForeignKey(Operations, on_delete=models.CASCADE, related_name='operation+')
+    operation = models.ForeignKey(
+        Operations, on_delete=models.CASCADE, related_name='operation+')
     accountSender = models.ForeignKey(
         Accounts, related_name='account+', on_delete=models.CASCADE)
     accountRecipient = models.ForeignKey(

@@ -7,7 +7,7 @@ from tasks.views import *
 from finance.views import *
 
 urlpatterns = [
-    path("", home),
+    path("", UserAccountsList.as_view(), name='accountsList'),
 ]
 
 
