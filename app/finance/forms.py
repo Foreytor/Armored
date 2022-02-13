@@ -13,3 +13,7 @@ class TranslationForm(forms.Form):
         #author_id = kwargs.pop("author_id", None)
         forms.Form.__init__(self, *args, **kwargs)
         self.fields['selectAccount'].queryset = Accounts.objects.filter(user=user_id)
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=36, label='Поиск')

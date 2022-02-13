@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block context %} 
+{% for translation in object_list %}
+
+    <li> Счет :{{ translation.operation }} ||
+         Кому: {{ translation.accountRecipient.user }} ||
+         Сумма: {{ translation.sum }} ||
+         Когда: {{ translation.dateCreate }} ||</li>
+
+{% endfor %}
+{% endblock context %}

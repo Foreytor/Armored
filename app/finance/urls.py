@@ -11,6 +11,7 @@ urlpatterns = [
     path("<int:pk>/", TranslationDetals.as_view(), name='translationDetals'),
     path("starttranslation/", StartTranslation.as_view(), name='starttranslation'),
     path("translationlistuser/", TranslationListUser.as_view(), name='translationlistuser'),
+    path("searchlist/", SearchList.as_view(), name='searchlist'),
 ]
 
 

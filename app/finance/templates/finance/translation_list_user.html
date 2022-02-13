@@ -4,6 +4,12 @@
 
 
 {% block context %} 
+<form action="{% url 'searchlist' %}" method="get">
+    {% csrf_token %}
+    {{ search }}
+    <input type="submit" value="Поиск">
+</form>
+
  <p>Счета : {{ user }}</p>
 <hr>
 <ul>
