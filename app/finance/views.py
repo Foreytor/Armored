@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 import uuid
 
-from .forms import TranslationForm
+from .forms import TranslationForm, SearchForm
 from django.contrib.auth.models import User
 
 
@@ -78,7 +78,6 @@ class StartTranslation(View):
         # id счета получателя
         accountNumber = request.session['accountNumber']
         form = TranslationForm(userRecipient, request.POST)
-        print('__________________')
 
         if form.is_valid():
             # С каких счетов списывать
@@ -90,7 +89,6 @@ class StartTranslation(View):
             for i in selectAccount:
                 sumAll = sumAll + i.balance
             # Праверка на наличие суммы
-            print(sumAll)
             if sumAll < sumTranslatio:
                 request.session['error'] = 'Недостаточно средст для перевода'
                 return HttpResponseRedirect(f'/{accountNumber}')
@@ -173,5 +171,35 @@ class TranslationListUser(ListView):
         paginator = Paginator(translation, 4)
         context['translations'] = paginator.page(
             self.request.GET.get('page', 1))
+        
+        context['search'] = SearchForm()
 
         return context
+
+@method_decorator(login_required, name='dispatch')
+class SearchList(ListView):
+    """Класс, для просмотра срезультатов поиска"""
+
+    template_name = './finance/search_results.html'
+    model = Translations
+
+    def get_queryset(self): # новый
+        search = self.request.GET.get('search')
+
+        operation = Operations.objects.filter(operation__icontains=search)
+        object_list = Translations.objects.filter(operation__in=operation)
+        return object_list
+
+    #def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)        
+    #     context['search'] = SearchForm()
+
+    #     return context
+
+    # def post(self, request, *args, **kwargs):
+    #     form = SearchForm(request.POST)
+    #     if form.is_valid():
+    #         search = form.cleaned_data['search']
+    #         operation = Operations.objects.filter(operation__icontains=search)
+    #         self.context['searchList'] = Translations.objects.filter(operation__in=operation)
+    #         return HttpResponseRedirect('/searchlist/')
