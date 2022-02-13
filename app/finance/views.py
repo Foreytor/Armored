@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.db.models import Q
 import uuid
+from tasks.tasks import taskTranslation
 
 from .forms import TranslationForm, SearchForm, FilterForm
 from django.contrib.auth.models import User
@@ -74,7 +75,6 @@ class StartTranslation(View):
 
     def post(self, request, *args, **kwargs):
         userRecipient = request.session['userRecipient']
-        #userSend = request.session['userSend']
         # id счета получателя
         accountNumber = request.session['accountNumber']
         form = TranslationForm(userRecipient, request.POST)
@@ -122,36 +122,9 @@ class StartTranslation(View):
                 if value > account.balance:
                     request.session['error'] = 'Не удалось распределить сумму автоматический'
                     return HttpResponseRedirect(f'/{accountNumber}')
-            # Создание обекта операции
-            operation = Operations()
-            operation.operation = uuid.uuid4()
-            accountAccount = Accounts.objects.get(pk=accountNumber)
-            operation.user = accountAccount.user
-            operation.userRecipient = User.objects.get(pk=int(userRecipient))
-            operation.status = 'В обработке'
-            operation.save()
+            
+            taskTranslation.delay(accountNumber, userRecipient, transactions)
 
-            for key, value in transactions.items():
-                translation = Translations()
-                translation.operation = operation
-                accounts = Accounts.objects.get(account=key)
-                translation.accountSender = accounts
-                translation.accountRecipient = Accounts.objects.get(
-                    pk=accountNumber)
-                translation.sum = value
-                translation.save()
-
-                # Списываем со счета:
-                accounts.balance = accounts.balance - value
-                accounts.save()
-
-                # Кладем на счета:
-                accountAccount.balance = accountAccount.balance + value
-                accountAccount.save()
-
-            # Списывание с каждого счета и запись информации об этом
-
-            print(transactions)
         return HttpResponseRedirect('/')
 
 
