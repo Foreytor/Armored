@@ -22,7 +22,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./.env.prod.db
+      - ./.env.prod
     restart: always
 
   nginx:
@@ -31,22 +31,21 @@ services:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
     ports:
-      - 1334:80
+      - 1336:80
     depends_on:
       - web
-      - nginx-vue
     restart: always
 
   celery:
     build:
       context: ./app
       dockerfile: Dockerfile.prod
-    command: celery worker --app=core --loglevel=info --logfile=logs/celery.log
+    command: celery --app=core worker --loglevel=info --logfile=logs/celery.log
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
     env_file:
-      - ./.env.celery.prod
+      - ./.env.prod
     depends_on:
       - web
       - redis
@@ -58,23 +57,15 @@ services:
 
   dashboard:
     build: ./app
-    command:  flower -A core --port=5555 --broker=redis://redis:6379/0
+    command:  celery flower -A core --port=5555 --broker=redis://redis:6379/0
     ports:
-      - 5655:5555
+      - 5666:5555
     env_file:
-      - ./.env.celery.prod
+      - ./.env.prod
     depends_on:
       - web
       - redis
       - celery
-    restart: always
-
-  nginx-vue:
-    build:
-      context: ./kcalibrator-web-view-vue
-      dockerfile: Dockerfile
-    ports:
-      - 1335:81
     restart: always
 
 
