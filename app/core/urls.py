@@ -8,6 +8,7 @@ from tasks.views import *
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('finance.urls')),
+    path('', include('accounts.urls')),
 
 ]
 

@@ -21,7 +21,7 @@ class Operations(models.Model):
     operation = models.CharField(
         max_length=36, verbose_name='Номер операции', unique=True)
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Пользователь отправитель')
+        User, on_delete=models.CASCADE, verbose_name='Пользователь отправителя')
     userRecipient = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='Пользователь получатель', related_name='user')
     dateCreate = models.DateTimeField(

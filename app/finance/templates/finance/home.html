@@ -6,7 +6,7 @@
 {% block context %} 
 <ul>
 {% for account in accounts %}
-<li> {{ account.user }}  || {{ account.account }} ||</li>
+<li> Пользователь: {{ account.user }}  || Счет :{{ account.account }} || <a href="{% url 'translationDetals' account.pk %}">{{ account.account }}</a> </li>
 {% endfor %}
 </ul>
 {% endblock context %}

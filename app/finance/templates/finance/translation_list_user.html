@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block context %} 
+ <p>Счета : {{ user }}</p>
+<hr>
+<ul>
+{% for translation in translations %}
+
+    <li> Счет :{{ translation.operation }} ||
+         Кому: {{ translation.accountRecipient.user }} ||
+         Сумма: {{ translation.sum }} ||
+         Когда: {{ translation.dateCreate }} ||</li>
+
+{% endfor %}
+</ul>
+<div class="pagination">
+    <span class="step-links">
+        {% if translations.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ translations.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ translations.number }} of {{ translations.paginator.num_pages }}.
+        </span>
+
+        {% if translations.has_next %}
+            <a href="?page={{ translations.next_page_number }}">next</a>
+            <a href="?page={{ translations.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock context %}

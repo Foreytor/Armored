@@ -8,6 +8,9 @@ from finance.views import *
 
 urlpatterns = [
     path("", UserAccountsList.as_view(), name='accountsList'),
+    path("<int:pk>/", TranslationDetals.as_view(), name='translationDetals'),
+    path("starttranslation/", StartTranslation.as_view(), name='starttranslation'),
+    path("translationlistuser/", TranslationListUser.as_view(), name='translationlistuser'),
 ]
 
 

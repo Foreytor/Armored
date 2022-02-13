@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block context %} 
+<ul>
+
+    <li> Счета : {{ user }} 
+
+    {% for account in accountsUser %}
+    <li> Счет :{{ account.account }} || Баланс счета: {{ account.balance }} </li>
+    {% endfor %}
+</ul>
+<p>{{ error }}</p>
+Перевод на счет: {{ accountNumber.account }}
+<form action="{% url 'starttranslation' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Перевести">
+</form>
+
+{% endblock context %}
