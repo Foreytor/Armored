@@ -9,13 +9,20 @@
     {{ search }}
     <input type="submit" value="Поиск">
 </form>
+<hr>
 
  <p>Счета : {{ user }}</p>
+<hr>
+<form action="{% url 'translationlistuser' %}" method="get">
+    {% csrf_token %}
+    {{ formsFilter }}
+    <input type="submit" value="Поиск">
+</form>
 <hr>
 <ul>
 {% for translation in translations %}
 
-    <li> Счет :{{ translation.operation }} ||
+    <li> Операция :{{ translation.operation }} ||
          Кому: {{ translation.accountRecipient.user }} ||
          Сумма: {{ translation.sum }} ||
          Когда: {{ translation.dateCreate }} ||</li>

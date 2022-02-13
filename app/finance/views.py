@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 import uuid
 
-from .forms import TranslationForm, SearchForm
+from .forms import TranslationForm, SearchForm, FilterForm
 from django.contrib.auth.models import User
 
 
@@ -167,11 +167,16 @@ class TranslationListUser(ListView):
         context['accounts'] = Accounts.objects.exclude(
             user=self.request.user).order_by('user')
         account = Accounts.objects.filter(user=self.request.user)
-        translation = Translations.objects.filter(Q(accountSender__in=account)|Q(accountRecipient__in=account))
+        OptionsFilter = self.request.GET.get('selectFilter')
+        if not OptionsFilter:
+            translation = Translations.objects.filter(Q(accountSender__in=account)|Q(accountRecipient__in=account))
+        else:
+            translation = Translations.objects.filter(Q(accountSender__in=OptionsFilter))
+
         paginator = Paginator(translation, 4)
         context['translations'] = paginator.page(
             self.request.GET.get('page', 1))
-        
+        context['formsFilter'] = FilterForm(self.request.user)
         context['search'] = SearchForm()
 
         return context
@@ -189,17 +194,3 @@ class SearchList(ListView):
         operation = Operations.objects.filter(operation__icontains=search)
         object_list = Translations.objects.filter(operation__in=operation)
         return object_list
-
-    #def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)        
-    #     context['search'] = SearchForm()
-
-    #     return context
-
-    # def post(self, request, *args, **kwargs):
-    #     form = SearchForm(request.POST)
-    #     if form.is_valid():
-    #         search = form.cleaned_data['search']
-    #         operation = Operations.objects.filter(operation__icontains=search)
-    #         self.context['searchList'] = Translations.objects.filter(operation__in=operation)
-    #         return HttpResponseRedirect('/searchlist/')
