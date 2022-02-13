@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block context %} 
+
+
+    <li> № счета : {{ object.account }}</a>   ||
+        Баланс: {{ object.balance }} ||
+        Дата создания счета: {{ object.dateCreate }} ||
+        Дата последнего изменения счета: {{ object.dateUpdate }} ||</li>
+
+<hr>
+    
+
+{% for translation in translations %}
+
+    <li> Операция :{{ translation.operation }} ||
+         Кому: {{ translation.accountRecipient.user }} ||
+         Сумма: {{ translation.sum }} ||
+         Когда: {{ translation.dateCreate }} ||</li>
+
+{% endfor %}
+
+
+{% endblock context %}

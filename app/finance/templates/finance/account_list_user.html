@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block context %} 
+{% for account in object_list %}
+
+<li> № счет : <a href="{% url 'accountsdetals' account.pk %}">{{ account.account }}</a>   ||
+        Баланс: {{ account.balance }} ||
+        Дата создания счета: {{ account.dateCreate }} ||
+        Дата последнего изменения счета: {{ account.dateUpdate }} ||</li>
+
+{% endfor %}
+{% endblock context %}

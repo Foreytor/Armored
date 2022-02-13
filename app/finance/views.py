@@ -169,9 +169,11 @@ class TranslationListUser(ListView):
         account = Accounts.objects.filter(user=self.request.user)
         OptionsFilter = self.request.GET.get('selectFilter')
         if not OptionsFilter:
-            translation = Translations.objects.filter(Q(accountSender__in=account)|Q(accountRecipient__in=account))
+            translation = Translations.objects.filter(
+                Q(accountSender__in=account) | Q(accountRecipient__in=account))
         else:
-            translation = Translations.objects.filter(Q(accountSender__in=OptionsFilter))
+            translation = Translations.objects.filter(
+                Q(accountSender__in=OptionsFilter))
 
         paginator = Paginator(translation, 4)
         context['translations'] = paginator.page(
@@ -181,6 +183,7 @@ class TranslationListUser(ListView):
 
         return context
 
+
 @method_decorator(login_required, name='dispatch')
 class SearchList(ListView):
     """Класс, для просмотра срезультатов поиска"""
@@ -188,9 +191,38 @@ class SearchList(ListView):
     template_name = './finance/search_results.html'
     model = Translations
 
-    def get_queryset(self): # новый
+    def get_queryset(self):
         search = self.request.GET.get('search')
 
         operation = Operations.objects.filter(operation__icontains=search)
         object_list = Translations.objects.filter(operation__in=operation)
         return object_list
+
+
+@method_decorator(login_required, name='dispatch')
+class AccountList(ListView):
+    """Класс, для просмотра своих счетов"""
+
+    template_name = './finance/account_list_user.html'
+    model = Accounts
+
+    def get_queryset(self):
+        object_list = Accounts.objects.filter(user=self.request.user)
+        return object_list
+
+
+@method_decorator(login_required, name='dispatch')
+class AccountsDetals(DetailView):
+    """просматривать полную информацию о счете, отдельной страницей"""
+    template_name = './finance/account_delat_user.html'
+    model = Accounts
+    queryset = Accounts.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        account = context['object']
+        translation = Translations.objects.filter(
+            Q(accountSender=account) | Q(accountRecipient=account))
+        context['translations'] = translation
+
+        return context

@@ -16,7 +16,8 @@ class TranslationForm(forms.Form):
 
 
 class FilterForm(forms.Form):
-    selectFilter = forms.ModelMultipleChoiceField(queryset=Accounts.objects.all())
+    selectFilter = forms.ModelMultipleChoiceField(
+        queryset=Accounts.objects.all())
 
     def __init__(self, user_id, *args, **kwargs):
         #author_id = kwargs.pop("author_id", None)
